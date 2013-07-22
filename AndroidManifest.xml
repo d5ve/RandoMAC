@@ -12,14 +12,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.d5ve.randomac.DisplayMAC"
-            android:label="@string/title_display_mac"
-            android:parentActivityName="com.d5ve.randomac.RandoMAC" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.d5ve.randomac.RandoMAC" />
-        </activity>
-
     </application>
 </manifest>

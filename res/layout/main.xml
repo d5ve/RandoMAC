@@ -4,20 +4,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView
+<TextView android:id="@+id/current_mac"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="Hello World, RandoMAC"
+    android:text="00:00:00:00:00:00"
     />
-<EditText android:id="@+id/edit_message"
+<EditText android:id="@+id/new_mac"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:hint="@string/edit_message" />
+    android:hint="@string/new_mac" />
 <Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/button_send"
-    android:onClick="sendMessage" />
+    android:text="@string/button_set_mac"
+    android:onClick="setMac" />
 
 </LinearLayout>
 
