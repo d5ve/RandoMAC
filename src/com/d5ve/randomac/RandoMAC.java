@@ -10,6 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class RandoMAC extends Activity
@@ -34,15 +39,47 @@ public class RandoMAC extends Activity
 
     /** Called when the user clicks the Set MAC button */
     public void setMac(View view) {
-        // Shelling out goes here
-        TextView currentMac = (TextView) findViewById(R.id.current_mac);
-        currentMac.setTextSize(30);
+
         EditText editText = (EditText) findViewById(R.id.new_mac);
         String new_mac = editText.getText().toString();
         if ( new_mac.equals("") ) {
             new_mac = editText.getHint().toString();
         }
-        currentMac.setText( new_mac );
+
+        try {
+            // Executes the command.
+            StringBuilder s = new StringBuilder(128);
+            s.append("busybox ifconfig wlan0 hw ether ");
+            s.append(new_mac);
+            List<String> commands = new ArrayList<String>();
+            commands.add(s.toString());
+            Process process = Runtime.getRuntime().exec("su");
+
+            StringBuffer output = new StringBuffer();
+            DataOutputStream outStr = new DataOutputStream(process.getOutputStream());
+            DataInputStream inStr = new DataInputStream(process.getInputStream());
+            int read;
+            byte[] buffer = new byte[4096];
+            for (String single : commands) {
+                outStr.writeBytes(single + "\n");
+                outStr.flush();
+                while ( (read = inStr.read(buffer) ) > 0) {
+                    output.append(new String(buffer)); //, 0, read);
+                }
+            }
+            outStr.writeBytes("exit\n");
+            outStr.flush();
+            process.waitFor();
+            //return output.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        TextView currentMac = (TextView) findViewById(R.id.current_mac);
+        currentMac.setTextSize(30);
+        currentMac.setText( getCurrentMacAddress() );
         editText.setHint( getRandomMacAddress() );
     }
 
