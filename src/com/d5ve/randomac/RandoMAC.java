@@ -10,12 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import java.io.DataOutputStream;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.exceptions.RootDeniedException;
+import com.stericson.RootTools.execution.CommandCapture;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 public class RandoMAC extends Activity
 {
@@ -35,6 +39,12 @@ public class RandoMAC extends Activity
         TextView currentMac = (TextView) findViewById(R.id.current_mac);
         currentMac.setTextSize(30);
         currentMac.setText( current_mac );
+
+        if (RootTools.isRootAvailable()) {
+            // su exists, do something
+        } else {
+            // do something else
+        }
     }
 
     /** Called when the user clicks the Set MAC button */
@@ -46,35 +56,21 @@ public class RandoMAC extends Activity
             new_mac = editText.getHint().toString();
         }
 
-        try {
-            // Executes the command.
-            StringBuilder s = new StringBuilder(128);
-            s.append("busybox ifconfig wlan0 hw ether ");
-            s.append(new_mac);
-            List<String> commands = new ArrayList<String>();
-            commands.add(s.toString());
-            Process process = Runtime.getRuntime().exec("su");
+        StringBuilder s = new StringBuilder(128);
+        s.append("busybox ifconfig wlan0 hw ether ");
+        s.append(new_mac);
 
-            StringBuffer output = new StringBuffer();
-            DataOutputStream outStr = new DataOutputStream(process.getOutputStream());
-            DataInputStream inStr = new DataInputStream(process.getInputStream());
-            int read;
-            byte[] buffer = new byte[4096];
-            for (String single : commands) {
-                outStr.writeBytes(single + "\n");
-                outStr.flush();
-                while ( (read = inStr.read(buffer) ) > 0) {
-                    output.append(new String(buffer)); //, 0, read);
-                }
-            }
-            outStr.writeBytes("exit\n");
-            outStr.flush();
-            process.waitFor();
-            //return output.toString();
+        try {
+            CommandCapture command = new CommandCapture(0, s.toString());
+            RootTools.getShell(true).add(command).waitForFinish();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // Handle exception
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            // Handle exception
+        } catch (TimeoutException e) {
+            // Handle exception
+        } catch (RootDeniedException e) {
+            // Handle exception. This one would have been raised by the developer.
         }
 
         TextView currentMac = (TextView) findViewById(R.id.current_mac);
