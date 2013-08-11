@@ -1,0 +1,8 @@
+RandoMAC is free software. It comes without any warranty, to the extent
+permitted by applicable law.
+
+RandoMAC is released under the WTFPL Version 2.0 license 
+
+    http://sam.zoy.org/wtfpl/COPYING
+
+0. You just DO WHAT THE FUCK YOU WANT TO.
