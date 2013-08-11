@@ -16,6 +16,14 @@ MAC address to random, but assigned, values. Initially this randomisation will
 happen with a button press of the app, but the intent is to have the app as a
 service, changing the MAC automatically throughtout the day.
 
+Download APK
+------------
+
+APK built from current source is at
+https://github.com/d5ve/RandoMAC/raw/master/apk/RandoMAC-debug.apk
+
+This requires a rooted phone.
+
 Status
 ------
 
