@@ -42,8 +42,9 @@ public class RandoMAC extends Activity
 
         if (RootTools.isRootAvailable()) {
             // su exists, do something
+            // Test for RootTools.isBusyboxAvailable() if required.
         } else {
-            // do something else
+            // Warn the user that they need root.
         }
     }
 
@@ -60,6 +61,13 @@ public class RandoMAC extends Activity
         s.append("busybox ifconfig wlan0 hw ether ");
         s.append(new_mac);
 
+        WifiManager wifiMan = (WifiManager) this.getSystemService( Context.WIFI_SERVICE );
+        boolean wifiWasEnabled = wifiMan.isWifiEnabled();
+        if ( wifiWasEnabled ) {
+            // Disable wifi whilst we edit the file.
+            wifiMan.setWifiEnabled(false);
+        }
+
         try {
             CommandCapture command = new CommandCapture(0, s.toString());
             RootTools.getShell(true).add(command).waitForFinish();
@@ -71,6 +79,11 @@ public class RandoMAC extends Activity
             // Handle exception
         } catch (RootDeniedException e) {
             // Handle exception. This one would have been raised by the developer.
+        }
+
+        if ( wifiWasEnabled ) {
+            // Re-enable wifi if it was originally on.
+            wifiMan.setWifiEnabled(true);
         }
 
         TextView currentMac = (TextView) findViewById(R.id.current_mac);
