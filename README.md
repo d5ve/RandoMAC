@@ -1,3 +1,10 @@
+OUT OF DATE
+===========
+
+This repo is very out-of-date, and shouldn't be relied on to work on any phones.
+
+It didn't seem to work well even when it worked at all.
+
 RandoMAC
 ========
 
